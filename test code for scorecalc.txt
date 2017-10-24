@@ -1,64 +1,88 @@
 package test;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class main 
 {
 	static Scanner sc = new Scanner(System.in);
-	static int player1;
-	static int player2;
-	static int currentBatsmenNum=1;
-	static int otherBatsmenNum = 2;
+	static String stricker;
+	static String nonStricker;
+	//static int currentBatsmenNum=1;
+	//static int otherBatsmenNum = 2;
 	static int out=0;
 	static int total=0;
 	static boolean flag=true;
+	static List<String> totalbatsmens= new ArrayList<String>();
+	static List<String> batted= new ArrayList<String>();
+	static List<String> yettobat= new ArrayList<String>();
 	public static void main(String args[]) {
 		try {
+			for(int i=1;i<=11;i++)
+				yettobat.add("Player_"+i);
+			
+			stricker = yettobat.get(0);
+			nonStricker = yettobat.get(1);
+			yettobat.remove(0);
+			yettobat.remove(0);
+			batted.add(stricker);
+			batted.add(nonStricker);
 			while(flag) {
 				System.out.println("Input:");
 				String next = sc.next();
 				if(next.equalsIgnoreCase("exit")) {
 					flag=false;
 					System.out.println("Total: " + total + " - " + out);
-					System.out.println("Player1: " + player1);
-					System.out.println("Player2: " + player2);
+					System.out.println("stricker: " + stricker);
+					System.out.println("nonStricker: " + nonStricker);
 					System.exit(0);
 				}
 				if(numberOrNot(next)) {
-					currentBatsmen(Integer.parseInt(next),currentBatsmenNum);
+					currentBatsmen(Integer.parseInt(next),stricker);
 				}else {
-					if(next.equalsIgnoreCase("W")) {
-						out++;
-						if(out==10) {
-							flag=false;
-							System.out.println("Total: " + total + " - " + out);
-							System.out.println("Player1: " + player1);
-							System.out.println("Player2: " + player2);
-							System.exit(0);
+					if(next.equalsIgnoreCase("WD") || next.equalsIgnoreCase("NB")) {
+						total++;
+					}else {
+						if(next.equalsIgnoreCase("W")) {
+							out++;
+							if(out==10) {
+								flag=false;
+								System.out.println("Total: " + total + " - " + out);
+//								System.out.println("stricker: " + stricker);
+//								System.out.println("nonStricker: " + nonStricker);
+								System.exit(0);
+							}
+							System.out.println("index: " + Integer.parseInt(stricker.substring(stricker.indexOf("_")+1)));
+							//yettobat.remove(Integer.parseInt(stricker.substring(stricker.indexOf("_")+1)));
+							yettobat.remove(stricker);
+							main.stricker = yettobat.get(0);
+							stricker = yettobat.get(0);
+							yettobat.remove(0);
+							batted.add(stricker);
+							
 						}
 					}
 				}
-				System.out.println("Total: " + total + " - " + out + " ; " + "Striker: " + currentBatsmenNum + " ; "+ "Non-Striker: " + otherBatsmenNum);
+				System.out.println("Total: " + total + " - " + out + " ; " + "Striker: " + stricker + " ; "+ "Non-Striker: " + nonStricker);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		
 	}
-	static void currentBatsmen(int next,int currentBatsmenNum) {
+	static void currentBatsmen(int next,String stricker) {
 		try {
-			if(currentBatsmenNum==1) {
-				player1+=next;
+			if(stricker.equals(stricker)) {
+				stricker+=next;
 			}else {
-				player2+=next;
+				nonStricker+=next;
 			}
 			total+=next;
 			if(next%2==0) {
 				
 			}else {
-				main.currentBatsmenNum = otherBatsmenNum + currentBatsmenNum;
-				otherBatsmenNum = main.currentBatsmenNum - otherBatsmenNum;
-				main.currentBatsmenNum = main.currentBatsmenNum - otherBatsmenNum;
+				String temp = main.stricker;
+				main.stricker = main.nonStricker;
+				main.nonStricker = temp;
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
