@@ -1,0 +1,127 @@
+package tests;
+
+import java.util.*;
+
+public class main 
+{
+	static Scanner sc = new Scanner(System.in);
+	static String stricker;
+	static String nonStricker;
+	static int out=0;
+	static int total=0;
+	static int overs=0;
+	static int ballCount = 0;
+	static int extras=0;
+	static boolean flag=true;
+	static Map<String,Integer> batsmenTotal= new TreeMap<String,Integer>();
+	static List<String> ballStats = new ArrayList<String>();
+	static List<String> batted= new ArrayList<String>();
+	static List<String> yettobat= new ArrayList<String>();
+	public static void main(String [] args) {
+		try {
+			for(int i=1;i<=11;i++){
+				yettobat.add("Player_"+i);
+				batsmenTotal.put("Player_"+i, 0);
+			}
+			stricker = yettobat.get(0);
+			nonStricker = yettobat.get(1);
+			yettobat.remove(0);
+			yettobat.remove(0);
+			batted.add(stricker);
+			batted.add(nonStricker);
+			while(flag) {
+				System.out.println("Input:");
+				String next = sc.next();
+				ballCount++;
+				if(next.equalsIgnoreCase("exit")) {
+					flag=false;
+					System.out.println("Total: " + total + " - " + out);
+					System.out.println("stricker: " + stricker);
+					System.out.println("nonStricker: " + nonStricker);
+					System.exit(0);
+				}
+				if(numberOrNot(next)) {
+					if(Integer.parseInt(next) > 6){
+						ballCount--;
+						continue;
+					}
+					currentBatsmen(Integer.parseInt(next),stricker);
+				}else {
+					if(next.equalsIgnoreCase("WD") || next.equalsIgnoreCase("NB")) {
+						ballStats.add(next);
+						total++;
+						extras++;
+						ballCount--;
+					}else {
+						if(next.equalsIgnoreCase("W")) {
+							ballStats.add(next);
+							out++;
+							if(out==10) {
+								flag=false;
+								System.out.println("Total: " + total + " - " + out);
+								System.out.println(batsmenTotal.toString());
+								System.out.println(ballStats.toString());
+								System.exit(0);
+							}
+							System.out.println("index: " + Integer.parseInt(stricker.substring(stricker.indexOf("_")+1)));
+							yettobat.remove(stricker);
+							main.stricker = yettobat.get(0);
+							stricker = yettobat.get(0);
+							yettobat.remove(0);
+							batted.add(stricker);
+							
+						}
+					}
+				}
+				System.out.println("Total: " + total + " - " + out + " ; " + "Striker: " + stricker + " ; "+ "Non-Striker: " + nonStricker + " Overs: " + overs+"."+ballCount + " ; " + "extras: " + extras);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	static void currentBatsmen(int next,String stricker) {
+		try {
+			main.ballStats.add(Integer.toString(next));
+			if(stricker.equals(stricker)) {
+				batsmenTotal.put(stricker, batsmenTotal.get(stricker)+next);
+			}
+
+			total+=next;
+			if(next%2==0) {
+				if(ballCount%6==0){
+					overs++;
+					ballCount=0;
+					String temp = main.stricker;
+					main.stricker = main.nonStricker;
+					main.nonStricker = temp;
+				}
+			}else {
+				String temp = main.stricker;
+				main.stricker = main.nonStricker;
+				main.nonStricker = temp;
+				if(ballCount%6==0){
+					overs++;
+					ballCount=0;
+					temp = main.stricker;
+					main.stricker = main.nonStricker;
+					main.nonStricker = temp;
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	static boolean numberOrNot(String input)
+	{
+	    try
+	    {
+	        Integer.parseInt(input);
+	    }
+	    catch(NumberFormatException ex)
+	    {
+	        return false;
+	    }
+	    return true;
+	}
+}
